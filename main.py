@@ -3,6 +3,16 @@ import pandas as pd
 df = pd.read_csv("RAW_recipes.csv")
 df['index'] = df.index
 
+def filter(dict, min, max, param):
+    newDict = {}
+    count = 0
+    for i in dict:
+        if dict[i][param] >= min:
+            if dict[i][param] <= max:
+                newDict[count] = [dict[0], dict[1], dict[2], dict[3]]
+                count += 1
+    dict = newDict
+
 def merge_sort(arr):
     if len(arr) > 1:
         mid = len(arr) // 2
