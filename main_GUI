@@ -133,7 +133,15 @@ while True :
         else :                                                                                                                                                                    
             sortMeth = 'quick'                                                                                                                                                    
                                                                                                                                                                                   
-        # create function passing in sort method that calls sorting function with parameters                                                                                      
+        # create function passing in sort method that calls sorting function with parameters
+          minTime = -1           
+          maxTime = -1           
+          minCals = -1           
+          maxCals = -1           
+          selectedDif = -1       
+          ing1 = -1              
+          ing1 = -1              
+          ing3 = -1              
                                                                                                                                                                                   
         if (values['time']):                                                                                                                                                      
             minTime = values['minTime']                                                                                                                                           
