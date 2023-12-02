@@ -1,0 +1,5 @@
+def finalids(dict): #maps final dict back to data frame
+    someValues = []
+    for i in dict.values():
+        someValues.append(i[1])
+    return someValues
