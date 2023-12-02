@@ -1,5 +1,6 @@
 import pandas as pd                                                                                                                                                               
-import PySimpleGUI as sg                                                                                                                                                          
+import PySimpleGUI as sg   
+import mergesort as ms                                                                                                                                                      
 #sg.main()                                                                                                                                                                        
                                                                                                                                                                                   
 df = pd.read_csv("RAW_recipes.csv")                                                                                                                                                                                                   
@@ -71,7 +72,15 @@ layout = [[sg.Column(layout=[[sg.Text('WELCOME TO RECIPEASY', justification='cen
                                                                                                                                                                                   
 window = sg.Window('Recipeasy', layout, size=(400,400))                                                                                                                           
                                                                                                                                                                                   
-while True :                                                                                                                                                                      
+while True : 
+    minTime = '-1'           
+    maxTime = '-1'           
+    minCals = '-1'           
+    maxCals = '-1'           
+    selectedDif = '-1'       
+    ing1 = '-1'              
+    ing2 = '-1'              
+    ing3 = '-1'                                                                                                                                                                     
     event, values = window.read()                                                                                                                                                 
     if event == sg.WINDOW_CLOSED:                                                                                                                                                 
         break                                                                                                                                                                     
@@ -134,14 +143,7 @@ while True :
             sortMeth = 'quick'                                                                                                                                                    
                                                                                                                                                                                   
         # create function passing in sort method that calls sorting function with parameters
-          minTime = -1           
-          maxTime = -1           
-          minCals = -1           
-          maxCals = -1           
-          selectedDif = -1       
-          ing1 = -1              
-          ing1 = -1              
-          ing3 = -1              
+                          
                                                                                                                                                                                   
         if (values['time']):                                                                                                                                                      
             minTime = values['minTime']                                                                                                                                           
@@ -164,11 +166,17 @@ while True :
             ing2 = values['ing2']                                                                                                                                                 
             ing3 = values['ing3']                                                                                                                                                 
                                                                                                                                                                                   
-                                                                                                                                                                                  
+        if sortMeth == "merge":
+            i_minTime = int(minTime)
+            i_maxTime = int(maxTime)
+            i_minCals = int(minCals)
+            i_maxCals = int(maxCals)
+            final_dictionary = ms.controlMergeSort(df, i_minTime, i_maxTime, i_minCals, i_maxCals, selectedDif, ing1, ing2, ing3)   
+            print(final_dictionary[0])                                                                                                                                                                    
         # show pop up table of recipes --> create function for displaying these                                                                                                   
         CreateTable(df)                                                                                                                                                           
                                                                                                                                                                                   
                                                                                                                                                                                   
                                                                                                                                                                                   
 window.close()                                                                                                                                                                    
-                                                                                                                                                                                                                                                                                                                                             
+       
