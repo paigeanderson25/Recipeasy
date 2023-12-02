@@ -4,7 +4,7 @@ def finalids(dict): #maps dict back to data frame
         someValues.append(i[1])
     return someValues
 
-
+#someValues = finalids(dict)
 df2 = df.loc[df['id'].isin(someValues)]
 
 
