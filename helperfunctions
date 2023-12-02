@@ -3,3 +3,10 @@ def finalids(dict): #maps final dict back to data frame
     for i in dict.values():
         someValues.append(i[1])
     return someValues
+
+
+def createDict(dataframe, param): #creates dictionary from the data frame
+    df2 = dataframe[['index', param, 'id']]
+    container = df2.set_index('index').T.to_dict('list')
+    return container
+
