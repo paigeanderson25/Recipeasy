@@ -157,70 +157,75 @@ start_time = time.time()
 df = pd.read_csv("RAW_recipes.csv")
 df['index'] = df.index
 
+def merge(left_half, right_half):
+
+    dict = {}
+    i = j = k = 0
+    n1 = len(left_half)
+    n2 = len(right_half)
+
+    lk = list(left_half.keys())
+    rk = list(right_half.keys())
+
+    while i < n1 and j < n2:
+        left_val = left_half[lk[i]]
+        right_val = right_half[rk[j]]
+
+        if left_val[0] <= right_val[0]:  # Compare based on minutes value
+            dict[k] = left_val
+            i += 1
+        else:
+            dict[k] = right_val
+            j += 1
+        k += 1
+
+    while i < n1:
+        dict[k] = left_half[lk[i]]
+        i += 1
+        k += 1
+
+    while j < n2:
+        dict[k] = right_half[rk[j]]
+        j += 1
+        k += 1
+
+    return dict
+
+
 def merge_sort(dictionary):
     if len(dictionary) > 1:
         mid = len(dictionary) // 2
         left_half = {k: dictionary[k] for k in list(dictionary.keys())[:mid]}
         right_half = {k: dictionary[k] for k in list(dictionary.keys())[mid:]}
 
-        merge_sort(left_half)
-        merge_sort(right_half)
+        left_half = merge_sort(left_half)
+        right_half = merge_sort(right_half)
 
-        i = j = k = 0
+        return merge(left_half, right_half)
 
-        while i < len(left_half) and j < len(right_half):
-            left_key, left_value = next(iter(left_half.items()))
-            right_key, right_value = next(iter(right_half.items()))
+    return dictionary
 
-            if left_value[0][0] <= right_value[0][0]:  # Compare based on minutes value
-                dictionary[left_key] = left_value
-                left_half.pop(left_key)
-                i += 1
-            else:
-                dictionary[right_key] = right_value
-                right_half.pop(right_key)
-                j += 1
-            k += 1
 
-        while i < len(left_half):
-            left_key, left_value = next(iter(left_half.items()))
-            dictionary[left_key] = left_value
-            left_half.pop(left_key)
-            i += 1
-            k += 1
 
-        while j < len(right_half):
-            right_key, right_value = next(iter(right_half.items()))
-            dictionary[right_key] = right_value
-            right_half.pop(right_key)
-            j += 1
-            k += 1
 
 def mergesort_by_time(dataframe):
     container = {}
     index = 0
     for minutes in dataframe['minutes']:
-        container[index] = [[minutes, index]]  # Storing a list with minutes and recipe index
+        container[index] = [minutes, index]  # Storing a list with minutes and recipe index
         index += 1
-    merge_sort(container)
-
+    container = merge_sort(container)
     return container
+
 
 def narrow_down_by_time(sorted_time_dict, min_time, max_time):
     narrowed_time_sorted_dict = {}
     for key, value in sorted_time_dict.items():
-        if value[0][0] >= min_time:  # Accessing minutes from the list
+        if value[0] >= min_time:  # Accessing minutes from the list
             narrowed_time_sorted_dict[key] = value
-        if value[0][0] > max_time:
+        if value[0] > max_time:
             break
     return narrowed_time_sorted_dict
-
-timesorteddict = mergesort_by_time(df)
-n_resultdict = narrow_down_by_time(timesorteddict, 10, 10)
-print(timesorteddict[0])
-
-print("--- %s seconds ---" % (time.time() - start_time))
-
 
 
 
