@@ -22,3 +22,8 @@ def narrow_down(dict, min, max): #filter dict by min and max
             break
     return newdict
 
+# currClock1 = time.time()
+# currClock2 = time.time()
+# print(currClock2 - currClock1)
+
+
