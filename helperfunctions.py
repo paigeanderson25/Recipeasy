@@ -31,3 +31,9 @@ def narrow_down(dict, min, max): #filter dict by min and max
 # print(currClock2 - currClock1)
 
 
+if df.size() > 10:
+    df.sample(n=10)
+else:
+    df.sample(frac=1)
+
+
