@@ -1,8 +1,12 @@
-def finalids(dict): #maps final dict back to data frame
+def finalids(dict): #maps dict back to data frame
     someValues = []
     for i in dict.values():
         someValues.append(i[1])
     return someValues
+
+
+df2 = df.loc[df['id'].isin(someValues)]
+
 
 
 def createDict(dataframe, param): #creates dictionary from the data frame
