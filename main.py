@@ -3,6 +3,12 @@ import pandas as pd
 df = pd.read_csv("RAW_recipes.csv")
 df['index'] = df.index
 
+import time
+currClock1 = time.time()
+currClock2 = time.time()
+print(currClock2 - currClock1)
+
+
 def filter(dict, min, max, param):
     newDict = {}
     count = 0
