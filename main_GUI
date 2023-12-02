@@ -10,11 +10,20 @@ df = df[['index', 'id', 'name', 'minutes', 'nutrition', 'n_steps', 'ingredients'
 calOnly = df['nutrition'].str.split(',').str[0].str.replace('[', '').str.strip()                                                                                                                                                      
 df['nutrition'] = calOnly                                                                                                                                                                                                             
                                                                                                                                                                                                                                       
-def CreateTable(df) :                                                                                                                                                                                                                 
-    nameDf = df[['name']]                                                                                                                                                                                                             
+def CreateTable(df, final_dict):                                                                                                                                                                                                                 
+    # Extracting the second list value from each dictionary key
+    someValues = [i[1] for i in final_dict.values()]
+    #print(someValues[0])
+
+    # Filtering the original DataFrame based on the 'id' column
+    bigDf = df[df['id'].isin(someValues)]
+    #print(nameDf)
+
+    # Extracting the 'name' column from the filtered DataFrame
+    nameDf = bigDf[['name']]                                                                                                                                                                                                         
     nameList = nameDf.values.tolist()                                                                                                                                                                                                 
-    dfShown = df[['name', 'minutes', 'nutrition', 'n_steps', 'ingredients', 'description']]                                                                                                                                           
-    dfShownList = dfShown.values.tolist()                                                                                                                                                                                             
+    # = df[['name', 'minutes', 'nutrition', 'n_steps', 'ingredients', 'description']]                                                                                                                                           
+    #dfShownList = dfShown.values.tolist()                                                                                                                                                                                             
     #shownList = dfList[2]                                                                                                                                                                                                            
                                                                                                                                                                                                                                       
     tableLayout = [                                                                                                                                                                                                                   
@@ -33,7 +42,7 @@ def CreateTable(df) :
         elif event == 'Learn More' :                                                                                                                                                                                                  
             tableIndex = values['table'][0]                                                                                                                                                                                           
             if tableIndex != -1:                                                                                                                                                                                                      
-                row = dfShown.iloc[tableIndex]                                                                                                                                                                                        
+                row = bigDf.iloc[tableIndex]                                                                                                                                                                                        
                 formatData = f"Name: {row['name']}\nTime: {row['minutes']}\nNutrition: {row['nutrition']}\nNumber of Steps: {row['n_steps']}\nIngredients: {row['ingredients']}\nDescription: {row['description']}"                   
                 sg.popup('Recipe Details', f"Learn More:\n{formatData}")                                                                                                                                                              
                                                                                                                                                                                                                                       
@@ -174,7 +183,7 @@ while True :
             final_dictionary = ms.controlMergeSort(df, i_minTime, i_maxTime, i_minCals, i_maxCals, selectedDif, ing1, ing2, ing3)   
             print(final_dictionary[0])                                                                                                                                                                    
         # show pop up table of recipes --> create function for displaying these                                                                                                   
-        CreateTable(df)                                                                                                                                                           
+        CreateTable(df, final_dictionary)                                                                                                                                                           
                                                                                                                                                                                   
                                                                                                                                                                                   
                                                                                                                                                                                   
