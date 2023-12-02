@@ -8,6 +8,16 @@ currClock1 = time.time()
 currClock2 = time.time()
 print(currClock2 - currClock1)
 
+def finalids(dict): #maps final dict back to data frame
+    someValues = []
+    for i in dict:
+        someValues += dict[i][0]
+    return someValues
+
+
+df = df.loc[df['id'].isin(finalids(dict))] 
+
+
 
 def filter(dict, min, max, param):
     newDict = {}
