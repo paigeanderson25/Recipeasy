@@ -145,3 +145,85 @@ while option == 0 or (n * 10 < len(n_resultlist)):
 
 
 
+
+
+
+import pandas as pd
+import sys
+import time
+
+start_time = time.time()
+
+df = pd.read_csv("RAW_recipes.csv")
+df['index'] = df.index
+
+def merge_sort(dictionary):
+    if len(dictionary) > 1:
+        mid = len(dictionary) // 2
+        left_half = {k: dictionary[k] for k in list(dictionary.keys())[:mid]}
+        right_half = {k: dictionary[k] for k in list(dictionary.keys())[mid:]}
+
+        merge_sort(left_half)
+        merge_sort(right_half)
+
+        i = j = k = 0
+
+        while i < len(left_half) and j < len(right_half):
+            left_key, left_value = next(iter(left_half.items()))
+            right_key, right_value = next(iter(right_half.items()))
+
+            if left_value[0][0] <= right_value[0][0]:  # Compare based on minutes value
+                dictionary[left_key] = left_value
+                left_half.pop(left_key)
+                i += 1
+            else:
+                dictionary[right_key] = right_value
+                right_half.pop(right_key)
+                j += 1
+            k += 1
+
+        while i < len(left_half):
+            left_key, left_value = next(iter(left_half.items()))
+            dictionary[left_key] = left_value
+            left_half.pop(left_key)
+            i += 1
+            k += 1
+
+        while j < len(right_half):
+            right_key, right_value = next(iter(right_half.items()))
+            dictionary[right_key] = right_value
+            right_half.pop(right_key)
+            j += 1
+            k += 1
+
+def mergesort_by_time(dataframe):
+    container = {}
+    index = 0
+    for minutes in dataframe['minutes']:
+        container[index] = [[minutes, index]]  # Storing a list with minutes and recipe index
+        index += 1
+    merge_sort(container)
+
+    return container
+
+def narrow_down_by_time(sorted_time_dict, min_time, max_time):
+    narrowed_time_sorted_dict = {}
+    for key, value in sorted_time_dict.items():
+        if value[0][0] >= min_time:  # Accessing minutes from the list
+            narrowed_time_sorted_dict[key] = value
+        if value[0][0] > max_time:
+            break
+    return narrowed_time_sorted_dict
+
+timesorteddict = mergesort_by_time(df)
+n_resultdict = narrow_down_by_time(timesorteddict, 10, 10)
+print(timesorteddict[0])
+
+print("--- %s seconds ---" % (time.time() - start_time))
+
+
+
+
+
+
+
