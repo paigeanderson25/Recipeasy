@@ -2,8 +2,8 @@ import pandas as pd
 import time
 
 start_time=time.time()
-df = pd.read_csv("RAW_recipes.csv")
-df['index'] = df.index
+'''df = pd.read_csv("RAW_recipes.csv")
+df['index'] = df.index'''
 
 def merge_sort(arr): #merge sort, works for minutes, cals, and difficulty. Takes in 2D list with format[[value(ex.minutes), alphabetical index]]
     if len(arr) > 1:
@@ -150,37 +150,37 @@ def XtoDiffandnarrow(dataframe, Xlist, difficulty):
 def fixPunctuation(name):
     current = 0
     newName = ""
-    
     while current != len(name):
+        
         if current == 0:
             newName += name[current].capitalize()
             current += 1
-        elif current != len(name) - 1:
-            if name[current] == " " and name[current + 1] != " ":
-                if name[current] == " " and name[current - 1] == "n" and name[current + 1] == "t" and name[current + 2] == " ":
-                    newName += "'t"
-                    current += 2
-                elif name[current] == " " and name[current - 1] == "t" and name[current + 1] == "s" and name[current + 2] == " ":
-                    newName += "s"
-                    current += 2
-                
-                else:
-                    newName += name[current] + name[current + 1].capitalize()
-                    current += 2
-            
-            elif name[current] == " " and name[current + 1] == " ":
+        elif current < len(name) - 2:
+            if name[current] == " " and name[current + 1] == " ":
                 
                 current += 1
-                
+            elif name[current] == " " and name[current - 1] == "n" and name[current + 1] == "t" and name[current + 2] == " ":
+                newName += "'t"
+                current += 2
+            elif name[current] == " " and name[current - 1] == "t" and name[current + 1] == "s" and name[current + 2] == " ":
+                newName += "s"
+                current += 2
+            elif name[current] == " " and name[current - 1] != "" and name[current + 1] == "s" and name[current + 2] == " ":
+                newName += "'s"
+                current += 2
+            
+            elif name[current] == " " and name[current + 1] != " ":
+                newName += " " + name[current + 1].capitalize()
+                current += 2
             else:
                 newName += name[current]
                 current += 1
+
         else:
             newName += name[current]
             current += 1
 
     return newName 
-    
 
 def checkIngredients(dataframe, Xlist, ing1, ing2, ing3):
     result_list = []
