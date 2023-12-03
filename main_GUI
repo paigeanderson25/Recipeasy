@@ -11,6 +11,13 @@ df = df[['index', 'id', 'name', 'minutes', 'nutrition', 'n_steps', 'ingredients'
 calOnly = df['nutrition'].str.split(',').str[0].str.replace('[', '').str.strip()                                                                                                                                                                                                                        
 df['nutrition'] = calOnly                                                                                                                                                                                                                                                                               
                                                                                                                                                                                                                                                                                                         
+def NoRecipesFound():
+    layout = [[sg.Text('ERROR: NO RECIPES FOUND')],
+                [sg.Text('Please try different input values')]]
+    errorWindow = sg.Window('Error', layout)
+    event, values = errorWindow.read()
+    errorWindow.close()
+
 def CatchCharForInt(minVal, maxVal) :                                                                                                                                                                                                                                                                   
     if (minVal.isdigit() == False and minVal != '-1'):                                                                                                                                                                                                                                                  
         print("Error: please enter integer values only")                                                                                                                                                                                                                                                
@@ -287,13 +294,22 @@ while True :
                                                                                                                                                                                                                                                                                                                              
             if sortMeth == "merge":                                                                                                                                                                                                                                                                                          
                 final_dictionary = ms.controlMergeSort(df, i_minTime, i_maxTime, i_minCals, i_maxCals, selectedDif, ing1, ing2, ing3)                                                                                                                                                                                        
-                #print(final_dictionary[0])                                                                                                                                                                                                                                                                                   
-                                                                                                                                                                                                                                                                                                                             
+                #print(final_dictionary[0])
                 # show pop up table of recipes --> create function for displaying these                                                                                                                                                                                                                                      
-                CreateTable(df, final_dictionary)
+
+                if (final_dictionary == {}):
+                    sg.theme('DarkRed1')
+                    NoRecipesFound()
+                else:
+                    CreateTable(df, final_dictionary)
+
             if sortMeth == "quick":
                 final_dictionary = qs.controlQuickSort(df, i_minTime, i_maxTime, i_minCals, i_maxCals, selectedDif, ing1, ing2, ing3)
-                CreateTable(df, final_dictionary)                                                                                                                                                                                                                                                                            
+                if (final_dictionary == {}):
+                    sg.theme('DarkRed1')
+                    NoRecipesFound()
+                else:
+                    CreateTable(df, final_dictionary)                                                                                                                                                                                                                                                               
                                                                                                                                                                                                                                                                                                                              
                                                                                                                                                                                                                                                                                                                              
                                                                                                                                                                                                                                                                                                                              
