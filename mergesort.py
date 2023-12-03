@@ -54,6 +54,7 @@ def mergesortandnarrowbyTime(dataframe, min, max): #sets up container for merge 
 
 
 def findCals(nutrition_string):
+    print(nutrition_string)
     calories = ""
     for i in range (1, 10):
         if nutrition_string[i] == ',':
@@ -68,7 +69,7 @@ def XtoCalandnarrow(dataframe, Xlist, min, max):
     callist = []
     for i in range(len(Xlist)):
         nutrition = dataframe.loc[Xlist[i][1], 'nutrition']
-        float_calories = findCals(nutrition)
+        float_calories = float(nutrition)
         
         callist.append([float_calories, Xlist[i][1]])
     
@@ -84,7 +85,7 @@ def mergesortandnarrowbyCal(dataframe, min, max):
     container = []
     index = 0
     for value in dataframe['nutrition']:
-        float_calories = findCals(value)
+        float_calories = float(value)
         container.append([float_calories, index])
         index += 1
     merge_sort(container)
@@ -104,6 +105,7 @@ def mergesortandnarrowbyDiff(dataframe, difficulty):
         container.append([value, index])
         index += 1
     merge_sort(container)
+    
     narroweddiffsortedlist = []
     range1 = []
     
@@ -113,13 +115,13 @@ def mergesortandnarrowbyDiff(dataframe, difficulty):
         range1 = [6, 9]
     else:
         range1 = [10, 99999]
-    
+
     for i in range(len(container)):
-        if (container[i][0] >= range1[0]):
+        if (container[i][0] >= range1[0] and container[i][0] <= range1[1]):
             narroweddiffsortedlist.append(container[i])
         if (container[i][0] > range1[1]):
             break
-        return narroweddiffsortedlist
+    return narroweddiffsortedlist
 
 def XtoDiffandnarrow(dataframe, Xlist, difficulty):
     difflist = []
@@ -187,7 +189,6 @@ def checkIngredients(dataframe, Xlist, ing1, ing2, ing3):
         if ing1 == "-1" and ing2 == "-1" and ing3 == "-1":
             return Xlist
         elif ing1 in ingredients and ing2 == "-1" and ing3 == "-1":
-            #print(Xlist[i][1])
             result_list.append(Xlist[i][1])
         elif ing1 in ingredients and ing2 in ingredients and ing3 == "-1":
             result_list.append(Xlist[i][1])
@@ -195,6 +196,14 @@ def checkIngredients(dataframe, Xlist, ing1, ing2, ing3):
             result_list.append(Xlist[i][1])      
     
     return result_list
+
+def ingredientsonlyList(dataframe):
+    container = []
+    index = 0
+    for value in dataframe['n_steps']:
+        container.append([value, index])
+        index += 1    
+    return container
 
 
 
@@ -210,14 +219,16 @@ def controlMergeSort(dataframe, min_time, max_time, min_cals, max_cals, difficul
                 n_resultlist = XtoDiffandnarrow(dataframe, n_resultlist, difficulty)
     else:
         if max_cals != -1:
-            
             n_resultlist = mergesortandnarrowbyCal(dataframe, min_cals, max_cals)
             if difficulty != "-1":
                 n_resultlist = XtoDiffandnarrow(dataframe, n_resultlist, difficulty)
                 
         else:
             if difficulty != "-1":
-                n_resultlist = XtoDiffandnarrow(dataframe, n_resultlist, difficulty)
+                n_resultlist = mergesortandnarrowbyDiff(dataframe, difficulty)
+            else:
+                n_resultlist = ingredientsonlyList(dataframe)
+                
     if ing1 != "-1":
         final_resultlist = checkIngredients(dataframe, n_resultlist, ing1, ing2, ing3)
     else:
@@ -228,124 +239,6 @@ def controlMergeSort(dataframe, min_time, max_time, min_cals, max_cals, difficul
         l = [i, dataframe.loc[final_resultlist[i], 'id']]
         final_dict[i] = l
     return final_dict
-
-
-'''dictionary = controlMergeSort(df, 10, 20, 300, 500, "easy", "beans", "", "")
-print(dictionary[0])'''
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-'''timesortedlist = mergesortbyTime(df)
-n_resultlist = narrowdownbyTime(timesortedlist, 10, 100)
-print(n_resultlist[0][0])
-print("--- %s seconds ---" % (time.time() - start_time))'''
-
-'''diffsortedlist = mergesortandnarrowbyDiff(df, True, True, True)
-print(diffsortedlist[0])'''
-
-'''n = 1
-print("Welcome to Recipeasy!")
-option = (input("What would you like to sort by:\n1. Time\n2. Nutrition\n3. Difficulty\nSelect a number or type multiple numbers with a space(ex. 1 2 3):"))
-options_list = option.split()
-
-if '1' in options_list:
-    minimum_time = int(input("Enter Minimum Time: "))
-    maximum_time = int(input("Enter Maximum Time: "))
-if '2' in options_list:
-    minimum_cal = int(input("Enter Minimum Calories: "))
-    maximum_cal = int(input("Enter Maximum Calories: "))
-if '3' in options_list:
-    easy = False
-    medium = False
-    hard = False
-    easy_input = input("Would you like to include easy recipes?(y or n): ")
-    if easy_input == "y":
-        easy = True
-    medium_input = input("Would you like to include medium recipes?(y or n): ")
-    if medium_input == "y":
-        medium = True
-    hard_input = input("Would you like to include hard recipes?(y or n): ")
-    if hard_input == "y":
-        hard = True
-    if easy == False and medium == False and hard == False:
-        print("Must select a difficulty")
-        exit
-
-if '1' in options_list:
-    timesortedlist = mergesortbyTime(df)
-    n_resultlist = narrowdownbyTime(timesortedlist, minimum_time, maximum_time)
-    if '2' in options_list:
-        n_resultlist = XtoCalandnarrow(df, n_resultlist, minimum_cal, maximum_cal)
-        if '3' in options_list:
-            n_resultlist = XtoDiffandnarrow(df, n_resultlist, easy, medium, hard)
-    else:
-        if '3' in options_list:
-            n_resultlist = XtoDiffandnarrow(df, n_resultlist, easy, medium, hard)
-
-else:
-    if '2' in options_list:
-        n_resultlist = mergesortandnarrowbyCal(df, minimum_cal, maximum_cal)
-        if '3' in options_list:
-            n_resultlist = XtoDiffandnarrow(df, n_resultlist, easy, medium, hard)    
-    else:
-        if '3' in options_list:
-            n_resultlist = mergesortandnarrowbyDiff(df, easy, medium, hard) 
-        else:
-            print("No options selected.")
-            exit
-
-
-option = 0
-if len(n_resultlist) == 0:
-    print("No recipes fit your criteria.")
-    quit
-if len(n_resultlist) < 10:
-    print("These are the only recipes that fit your criteria: ")
-    for i in range(len(n_resultlist)):
-        index = n_resultlist[i][1]
-        print(f"{i + 1}. {fixPunctuation(df.loc[index, 'name'])}")
-    option = int(input("Select a recipe # to learn more, or type anything else to quit: "))
-    if 1 <= option <= (len(n_resultlist) + 1):
-        index = n_resultlist[option - 1][1]
-        print(f"Name: {df.loc[index, 'name']}\nTime: {df.loc[index, 'minutes']}\nCalories: {findCals(df.loc[index, 'nutrition'])}\n# Of Steps: {df.loc[index, 'n_steps']}\nIngredients: {df.loc[index, 'ingredients']}")
-        quit
-
-while option == 0 or (n * 10 < len(n_resultlist)):
-    print("Here are some recipes you may like: ")
-    for i in range(n * 10):
-            index = n_resultlist[i][1]
-            print(f"{i + 1}. {fixPunctuation(df.loc[index, 'name'])}")
-
-    option = int(input("Select a recipe # to learn more, type 0 to see more recipes, or type anything else to quit: "))
-    n += 1
-    if 1 <= option <= n * 10:
-        index = n_resultlist[option - 1][1]
-        print(f"Name: {df.loc[index, 'name']}\nTime: {df.loc[index, 'minutes']}\nCalories: {findCals(df.loc[index, 'nutrition'])}\n# Of Steps: {df.loc[index, 'n_steps']}\nIngredients: {df.loc[index, 'ingredients']}")
-        break'''
-
-
-
 
 
 
