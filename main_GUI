@@ -11,13 +11,6 @@ df = df[['index', 'id', 'name', 'minutes', 'nutrition', 'n_steps', 'ingredients'
 calOnly = df['nutrition'].str.split(',').str[0].str.replace('[', '').str.strip()                                                                                                                                                                                                                        
 df['nutrition'] = calOnly                                                                                                                                                                                                                                                                               
                                                                                                                                                                                                                                                                                                         
-def NoRecipesFound():
-    layout = [[sg.Text('ERROR: NO RECIPES FOUND')],
-                [sg.Text('Please try different input values')]]
-    errorWindow = sg.Window('Error', layout)
-    event, values = errorWindow.read()
-    errorWindow.close()
-
 def CatchCharForInt(minVal, maxVal) :                                                                                                                                                                                                                                                                   
     if (minVal.isdigit() == False and minVal != '-1'):                                                                                                                                                                                                                                                  
         print("Error: please enter integer values only")                                                                                                                                                                                                                                                
@@ -65,16 +58,17 @@ def CreateTable(df, final_dict):
                                                                                                                                                                                                                                                                                                         
     # Filtering the original DataFrame based on the 'id' column                                                                                                                                                                                                                                         
     bigDf = df[df['id'].isin(someValues)]  
-    if bigDf.size > 5:
+    '''if bigDf.size > 5:
         bigDf = bigDf.sample(n=5)
     else:
-        bigDf = bigDf.sample(frac=1)                                                                                                                                                                                                                                                             
+        bigDf = bigDf.sample(frac=1)  '''                                                                                                                                                                                                                                                           
     #print(nameDf)                                                                                                                                                                                                                                                                                                               
                                                                                                                                                                                                                                                                                                                              
     # Extracting the 'name' column from the filtered DataFrame                                                                                                                                                                                                                                                               
     nameDf = bigDf[['name']]                                                                                                                                                                                                                                                                                             
     nameList = []
     for value in nameDf['name']:
+        
         properName = ms.fixPunctuation(value)
         nameList.append([properName])
  
@@ -100,8 +94,9 @@ def CreateTable(df, final_dict):
         elif event == 'Learn More' :                                                                                                                                                                                                                                                                                         
             tableIndex = values['table'][0]                                                                                                                                                                                                                                                                                  
             if tableIndex != -1:                                                                                                                                                                                                                                                                                             
-                row = bigDf.iloc[tableIndex]                                                                                                                                                                                                                                                                                 
-                formatData = f"Name: {row['name']}\nTime: {row['minutes']}\nNutrition: {row['nutrition']}\nNumber of Steps: {row['n_steps']}\nIngredients: {row['ingredients']}\nDescription: {row['description']}"                                                                                                          
+                row = bigDf.iloc[tableIndex] 
+                ingredients = row['ingredients']                                                                                                                                                                                                                                                                             
+                formatData = f"Name: {ms.fixPunctuation(row['name'])}\nTime: {row['minutes']}\nCalories: {row['nutrition']}\nNumber of Steps: {row['n_steps']}\nIngredients: {ms.fixIngredientlist(ingredients)}\nDescription: {row['description']}"                                                                                                          
                 sg.popup('Recipe Details', f"Learn More:\n{formatData}")                                                                                                                                                                                                                                                     
                                                                                                                                                                                                                                                                                                                              
     window2.close()                                                                                                                                                                                                                                                                                                          
@@ -294,22 +289,13 @@ while True :
                                                                                                                                                                                                                                                                                                                              
             if sortMeth == "merge":                                                                                                                                                                                                                                                                                          
                 final_dictionary = ms.controlMergeSort(df, i_minTime, i_maxTime, i_minCals, i_maxCals, selectedDif, ing1, ing2, ing3)                                                                                                                                                                                        
-                #print(final_dictionary[0])
+                #print(final_dictionary[0])                                                                                                                                                                                                                                                                                   
+                                                                                                                                                                                                                                                                                                
                 # show pop up table of recipes --> create function for displaying these                                                                                                                                                                                                                                      
-
-                if (final_dictionary == {}):
-                    sg.theme('DarkRed1')
-                    NoRecipesFound()
-                else:
-                    CreateTable(df, final_dictionary)
-
+                CreateTable(df, final_dictionary)
             if sortMeth == "quick":
                 final_dictionary = qs.controlQuickSort(df, i_minTime, i_maxTime, i_minCals, i_maxCals, selectedDif, ing1, ing2, ing3)
-                if (final_dictionary == {}):
-                    sg.theme('DarkRed1')
-                    NoRecipesFound()
-                else:
-                    CreateTable(df, final_dictionary)                                                                                                                                                                                                                                                               
+                CreateTable(df, final_dictionary)                                                                                                                                                                                                                                                                            
                                                                                                                                                                                                                                                                                                                              
                                                                                                                                                                                                                                                                                                                              
                                                                                                                                                                                                                                                                                                                              
