@@ -6,13 +6,13 @@ def partition(dict, low, high):
     while up < down:
         j = up
         while j < high:
-            if dict[up][type] > pivot:
+            if dict[up][0] > pivot:
                 break
             up += 1
             j += 1
         j = high
         while j > low:
-            if dict[down][type] < pivot:
+            if dict[down][0] < pivot:
                 break
             down -= 1
             j -= 1
