@@ -53,7 +53,7 @@ def mergesortandnarrowbyTime(dataframe, min, max): #sets up container for merge 
     return narrowedtimesortedlist
 
 
-def findCals(nutrition_string):
+def findCals(nutrition_string): #fins calories from nutrition string in original file (not used in final main)
     print(nutrition_string)
     calories = ""
     for i in range (1, 10):
@@ -65,7 +65,7 @@ def findCals(nutrition_string):
 
     return f_calories
 
-def XtoCalandnarrow(dataframe, Xlist, min, max):
+def XtoCalandnarrow(dataframe, Xlist, min, max): #takes a given list with format [[minutes, index]] and filters by calories
     callist = []
     for i in range(len(Xlist)):
         nutrition = dataframe.loc[Xlist[i][1], 'nutrition']
@@ -81,7 +81,7 @@ def XtoCalandnarrow(dataframe, Xlist, min, max):
 
     return narrowedcallist
 
-def mergesortandnarrowbyCal(dataframe, min, max):
+def mergesortandnarrowbyCal(dataframe, min, max): #takes all values in the dataframe, mergesorts by calories and filters
     container = []
     index = 0
     for value in dataframe['nutrition']:
@@ -98,7 +98,7 @@ def mergesortandnarrowbyCal(dataframe, min, max):
             break
     return narrowedcalsortedlist
 
-def mergesortandnarrowbyDiff(dataframe, difficulty):
+def mergesortandnarrowbyDiff(dataframe, difficulty): #takes all values in dataframe, mergesorts by number of steps and filters by difficulty
     container = []
     index = 0
     for value in dataframe['n_steps']:
@@ -123,7 +123,7 @@ def mergesortandnarrowbyDiff(dataframe, difficulty):
             break
     return narroweddiffsortedlist
 
-def XtoDiffandnarrow(dataframe, Xlist, difficulty):
+def XtoDiffandnarrow(dataframe, Xlist, difficulty):   #takes in a list with format [[minutes/calories, index]] and filters by difficulty(no. of steps)
     difflist = []
     for i in range(len(Xlist)):
         steps = dataframe.loc[Xlist[i][1], 'n_steps']
@@ -146,7 +146,7 @@ def XtoDiffandnarrow(dataframe, Xlist, difficulty):
     return narroweddiffsortedlist
 
 
-def fixPunctuation(input_name):
+def fixPunctuation(input_name): #function takes in a string, and capitalizes the first letter of each word and fixes punctuation. Used for recipe names
     current = 0
     name = str(input_name)
     newName = ""
@@ -182,7 +182,7 @@ def fixPunctuation(input_name):
 
     return newName 
 
-def fixIngredientlist(ingredientstring):
+def fixIngredientlist(ingredientstring): #function takes in string holding the list of ingredients, removes unecessary symbols, and creates a better looking list
     newingredientstring = ""
     for i in range(len(ingredientstring)):
         if ingredientstring[i] != "[" and ingredientstring[i] != "]" and ingredientstring[i] != "'":
@@ -193,7 +193,7 @@ def fixIngredientlist(ingredientstring):
                 newingredientstring += ingredientstring[i]
     return newingredientstring
 
-def fixSteps(string):
+def fixSteps(string): #function takes in steps string from dataframe, removes unnecessary symbols, and numbers each step
     final_steps = ""
     j = 1
     for i in range(len(string)):
@@ -214,7 +214,7 @@ def fixSteps(string):
 
 #print(fixIngredientlist(['apple', 'banana', 'beans']))
 
-def checkIngredients(dataframe, Xlist, ing1, ing2, ing3):
+def checkIngredients(dataframe, Xlist, ing1, ing2, ing3): #this function takes in a list of format [[any value, index]], and creates a new list with only the inputted ingredients
     result_list = []
     for i in range(len(Xlist)):
         ingredients = (dataframe.loc[Xlist[i][1], 'ingredients'])
@@ -240,6 +240,7 @@ def ingredientsonlyList(dataframe):
 
 
 def controlMergeSort(dataframe, min_time, max_time, min_cals, max_cals, difficulty, ing1, ing2, ing3):
+    #the main mergesort function called when sort button is pressed. Takes in all inputted parameters and calls all necessary functions. Returns a dictionary with value = [index, recipe_id]
     if max_time != -1:
         n_resultlist = mergesortandnarrowbyTime(dataframe, min_time, max_time)
         if max_cals != -1:
