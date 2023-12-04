@@ -64,10 +64,10 @@ def CreateTable(df, final_dict):
                                                                                                                                                                                                                                                                                                         
     # Filtering the original DataFrame based on the 'id' column                                                                                                                                                                                                                                         
     bigDf = df[df['id'].isin(someValues)]  
-    if bigDf.size > 5:
+    if len(bigDf.index) > 5:
         bigDf = bigDf.sample(n=5)
     else:
-        bigDf = bigDf.sample(frac=1)                                                                                                                                                                                                                                                        
+        bigDf = bigDf                                                                                                                                                                                                                                                     
     #print(nameDf)                                                                                                                                                                                                                                                                                                               
                                                                                                                                                                                                                                                                                                                              
     # Extracting the 'name' column from the filtered DataFrame                                                                                                                                                                                                                                                               
