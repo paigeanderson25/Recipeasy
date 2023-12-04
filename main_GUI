@@ -42,7 +42,13 @@ def CatchInvalidInputIngredients(ing1, ing2, ing3):
         print(ing3)                                                                                                                                                                                                                                                                                     
         return False                                                                                                                                                                                                                                                                                    
                                                                                                                                                                                                                                                                                                         
-    return True                                                                                                                                                                                                                                                                                         
+    return True
+
+def NoRecipesFound():
+    layout = [[sg.Text('ERROR: no recipes found with ingredient(s)')]]
+    errorWindow = sg.Window('Error', layout)
+    event, values = errorWindow.read()
+    errorWindow.close()
                                                                                                                                                                                                                                                                                                         
 def ErrorPopup():                                                                                                                                                                                                                                                                                       
     layout = [[sg.Text('ERROR: INVALID INPUT')],                                                                                                                                                                                                                                                        
@@ -288,18 +294,28 @@ while True :
                                                                                                                                                                                                                                                                                            
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
             if sortMeth == "merge":                                                                                                                                                                                                                                                                                          
-                #for i in range(160):
-                    #sg.PopupAnimated(sg.DEFAULT_BASE64_LOADING_GIF, time_between_frames=40)
+                for i in range(160):
+                    sg.PopupAnimated(sg.DEFAULT_BASE64_LOADING_GIF, time_between_frames=40)
                 final_dictionary = ms.controlMergeSort(df, i_minTime, i_maxTime, i_minCals, i_maxCals, selectedDif, ing1, ing2, ing3)                                                                                                                                                                                        
                 #print(final_dictionary[0])                                                                                                                                                                                                                                                                                   
                                                                                                                                                                                                                                                                                                 
                 # show pop up table of recipes --> create function for displaying these                                                                                                                                                                                                                                      
-                CreateTable(df, final_dictionary)
+                sg.PopupAnimated(None)
+                if final_dictionary == {}:
+                    sg.theme('DarkRed1')
+                    NoRecipesFound()
+                else:
+                    CreateTable(df, final_dictionary)
             if sortMeth == "quick":
-                #for i in range(160):
-                    #sg.PopupAnimated(sg.DEFAULT_BASE64_LOADING_GIF, time_between_frames=40)
+                for i in range(160):
+                    sg.PopupAnimated(sg.DEFAULT_BASE64_LOADING_GIF, time_between_frames=40)
                 final_dictionary = qs.controlQuickSort(df, i_minTime, i_maxTime, i_minCals, i_maxCals, selectedDif, ing1, ing2, ing3)
-                CreateTable(df, final_dictionary)                                                                                                                                                                                                                                                                            
+                sg.PopupAnimated(None)
+                if final_dictionary == {}:
+                    sg.theme('DarkRed1')
+                    NoRecipesFound()
+                else:
+                    CreateTable(df, final_dictionary)                                                                                                                                                                                                                                                                            
                                                                                                                                                                                                                                                                                                                              
                                                                                                                                                                                                                                                                                                                              
                                                                                                                                                                                                                                                                                                                              
