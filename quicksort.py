@@ -2,27 +2,28 @@ import pandas as pd
 import time
 
 start_time = time.time()
-df = pd.read_csv("RAW_recipes.csv")
-df['index'] = df.index
+'''df = pd.read_csv("RAW_recipes.csv")
+df['index'] = df.index'''
 
 def partition(arr, low, high):
     pivot = arr[low][0]
     
-    up = low
-    down = high
+    low_ptr = low
+    mid_ptr = low + 1
+    high_ptr = high
 
-    while up < down:
-        while up < high and arr[up][0] <= pivot:
-            up += 1
+    while mid_ptr <= high_ptr:
+        if arr[mid_ptr][0] < pivot:
+            arr[low_ptr], arr[mid_ptr] = arr[mid_ptr], arr[low_ptr]
+            low_ptr += 1
+            mid_ptr += 1
+        elif arr[mid_ptr][0] > pivot:
+            arr[mid_ptr], arr[high_ptr] = arr[high_ptr], arr[mid_ptr]
+            high_ptr -= 1
+        else:
+            mid_ptr += 1
 
-        while down > low and arr[down][0] >= pivot:
-            down -= 1
-
-        if up < down:
-            arr[up], arr[down] = arr[down], arr[up]
-
-    arr[low], arr[down] = arr[down], arr[low]
-    return down
+    return low_ptr, high_ptr
 
 def quickSort(arr, low, high):
     stack = [(low, high)]
@@ -31,9 +32,9 @@ def quickSort(arr, low, high):
         low, high = stack.pop()
 
         if low < high:
-            pivot = partition(arr, low, high)
-            stack.append((low, pivot - 1))
-            stack.append((pivot + 1, high))
+            low_ptr, high_ptr = partition(arr, low, high)
+            stack.append((low, low_ptr - 1))
+            stack.append((high_ptr + 1, high))
 
 def quicksortandnarrowbyTime(dataframe, min_time, max_time):
     container = []
