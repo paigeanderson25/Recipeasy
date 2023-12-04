@@ -272,5 +272,3 @@ def controlMergeSort(dataframe, min_time, max_time, min_cals, max_cals, difficul
         final_dict[i] = l
     return final_dict
 
-
-
