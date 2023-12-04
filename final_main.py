@@ -4,11 +4,10 @@ import mergesort as ms
 import quicksort as qs
 import time
 
-
-
 from selenium.webdriver.support.wait import WebDriverWait
 import PIL
 from PIL import ImageTk, Image
+
 PIL.Image.ANTIALIAS = PIL.Image.LANCZOS
 from io import BytesIO
 import base64
@@ -19,9 +18,8 @@ import time
 import random
 from selenium.webdriver.support import expected_conditions as EC
 
-
-
-useragents = ["Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+useragents = [
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36",
     "Mozilla/5.0 (iPhone14,3; U; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/602.1.50 (KHTML, like Gecko) Version/10.0 Mobile/19A346 Safari/602.1"]
 
@@ -34,7 +32,6 @@ wait = WebDriverWait(driver, 20)
 
 
 def getimages(name):
-
     driver.get('https://images.google.com/');
 
     search_box = driver.find_element("name", "q")
@@ -100,11 +97,13 @@ def CatchInvalidInputIngredients(ing1, ing2, ing3):
 
     return True
 
+
 def NoRecipesFound():
     layout = [[sg.Text('ERROR: no recipes found with ingredient(s)')]]
     errorWindow = sg.Window('Error', layout)
     event, values = errorWindow.read()
     errorWindow.close()
+
 
 def ErrorPopup():
     layout = [[sg.Text('ERROR: INVALID INPUT')],
@@ -118,34 +117,36 @@ def CreateTable(df, final_dict, final_time):
     page = 0
     # Extracting the second list value from each dictionary key
     someValues = [i[1] for i in final_dict.values()]
-    #print(someValues[0])
+    # print(someValues[0])
 
     # Filtering the original DataFrame based on the 'id' column
 
     bigDf = df[df['id'].isin(someValues)]
-    
+
     if len(bigDf.index) > 5:
         bigDf = bigDf.sample(frac=1)
-    
-    #bigDf = bigDf.sample(frac=1)
-        # print(nameDf)
+
+    # bigDf = bigDf.sample(frac=1)
+    # print(nameDf)
 
     # Extracting the 'name' column from the filtered DataFrame
     nameDf = bigDf[['name']]
-    
+
     nameList = []
     for value in nameDf['name']:
         properName = ms.fixPunctuation(value)
         nameList.append([properName])
-    
+
     start = 0
     maxSize = len(nameList)
     end = min(5, maxSize)
 
     tableLayout = [
-        [sg.Text("Select a recipe and press to learn more:          Sort time: " + str(round(final_time,4)) + ' seconds')],
+        [sg.Text(
+            "Select a recipe and press to learn more:          Sort time: " + str(round(final_time, 4)) + ' seconds')],
         [sg.Table(border_width=0, num_rows=5, row_height=70, values=nameList[0:min(5, maxSize)], header_border_width=0,
-                  header_background_color='white', headings=['Recipe Names'], header_font= ('arima koshi', 16), font=('arima koshi', 12),
+                  header_background_color='white', headings=['Recipe Names'], header_font=('arima koshi', 16),
+                  font=('arima koshi', 12),
                   expand_y=True, expand_x=True, hide_vertical_scroll=True, justification='left', auto_size_columns=True,
                   col_widths=[300],
                   key='table')],
@@ -170,7 +171,7 @@ def CreateTable(df, final_dict, final_time):
                 ingredients = row['ingredients']
                 steps = row['steps']
                 formatData = f"Name: {ms.fixPunctuation(row['name'])}\nTime: {row['minutes']}\nCalories: {row['nutrition']}\nNumber of Steps: {row['n_steps']}\nIngredients: {ms.fixIngredientlist(ingredients)}\nSteps: {ms.fixSteps(steps)}"
-                sg.popup_scrolled('Recipe Details', f"{formatData}",image="img.png")
+                sg.popup_scrolled('Recipe Details', f"{formatData}", image="img.png")
 
         elif event == 'Next Page':
 
@@ -185,7 +186,7 @@ def CreateTable(df, final_dict, final_time):
 
             if start - 5 >= 0:
                 start -= 5
-                end = min(end, end-5)
+                end = min(end, end - 5)
                 window2['table'].update(values=nameList[start:end])
                 page -= 1
 
@@ -384,7 +385,6 @@ while True:
             i_minCals = int(minCals)
             i_maxCals = int(maxCals)
 
-
             if sortMeth == "merge":
                 for i in range(160):
                     sg.PopupAnimated(sg.DEFAULT_BASE64_LOADING_GIF, time_between_frames=40)
@@ -401,11 +401,10 @@ while True:
                 else:
                     CreateTable(df, final_dictionary, final_time)
 
-
                 # print(final_dictionary[0])
 
                 # show pop up table of recipes --> create function for displaying these
-                #CreateTable(df, final_dictionary, final_time)
+                # CreateTable(df, final_dictionary, final_time)
             if sortMeth == "quick":
                 for i in range(160):
                     sg.PopupAnimated(sg.DEFAULT_BASE64_LOADING_GIF, time_between_frames=40)
