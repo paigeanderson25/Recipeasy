@@ -146,7 +146,6 @@ def XtoDiffandnarrow(dataframe, Xlist, difficulty):
     return narroweddiffsortedlist
 
 
-
 def fixPunctuation(input_name):
     current = 0
     name = str(input_name)
@@ -193,6 +192,24 @@ def fixIngredientlist(ingredientstring):
             else:
                 newingredientstring += ingredientstring[i]
     return newingredientstring
+
+def fixSteps(string):
+    final_steps = ""
+    j = 1
+    for i in range(len(string)):
+        if string[i] == "[" or string[i] == "]" or string[i] == "'" or string[i] == ",":
+            if string[i] == "," and string[i - 1] == " ":
+                final_steps = final_steps[:-1]
+                final_steps += ","
+            
+        else:
+            if string[i - 1] == "'":
+                final_steps += "\n" + str(j) + ". " + string[i].capitalize()
+                j += 1
+            else:
+                final_steps += string[i]
+    return final_steps
+
 
 
 #print(fixIngredientlist(['apple', 'banana', 'beans']))
