@@ -352,6 +352,6 @@ while True:
                     sg.theme('DarkRed1')
                     NoRecipesFound()
                 else:
-                    CreateTable(df, final_dictionary))
+                    CreateTable(df, final_dictionary)
 
 window.close()
