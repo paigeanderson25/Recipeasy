@@ -341,17 +341,17 @@ while True:
                     sg.theme('DarkRed1')
                     NoRecipesFound()
                 else:
-                    CreateTable(df, final_dictionary)
+                    CreateTable(dfnew, final_dictionary)
             if sortMeth == "quick":
                 for i in range(160):
                       sg.PopupAnimated(sg.DEFAULT_BASE64_LOADING_GIF, time_between_frames=40)
-            #   final_dictionary = qs.controlQuickSort(df, i_minTime, i_maxTime, i_minCals, i_maxCals, selectedDif,
+            #    final_dictionary = qs.controlQuickSort(df, i_minTime, i_maxTime, i_minCals, i_maxCals, selectedDif,
             #                                            ing1, ing2, ing3)
-                sg.PopupAnimated(None)
-                if final_dictionary == {}:
+            #    sg.PopupAnimated(None)
+            #    if final_dictionary == {}:
                     sg.theme('DarkRed1')
                     NoRecipesFound()
                 else:
-                    CreateTable(df, final_dictionary)
+            #       CreateTable(df, final_dictionary)
 
 window.close()
