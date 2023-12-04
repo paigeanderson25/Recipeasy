@@ -310,7 +310,7 @@ while True :
                 for i in range(160):
                     sg.PopupAnimated(sg.DEFAULT_BASE64_LOADING_GIF, time_between_frames=40)
                 final_dictionary = qs.controlQuickSort(df, i_minTime, i_maxTime, i_minCals, i_maxCals, selectedDif, ing1, ing2, ing3)
-                Csg.PopupAnimated(None)
+                sg.PopupAnimated(None)
                 if final_dictionary == {}:
                     sg.theme('DarkRed1')
                     NoRecipesFound()
