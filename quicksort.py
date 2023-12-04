@@ -1,40 +1,37 @@
 import pandas as pd
 import time
+import random
 
 start_time = time.time()
 '''df = pd.read_csv("RAW_recipes.csv")
 df['index'] = df.index'''
 
+
 def partition(arr, low, high):
-    pivot = arr[low][0]
-    
-    low_ptr = low
-    mid_ptr = low + 1
-    high_ptr = high
+    pivot = arr[random.randint(low, high)][0]
+    i = low
+    j = low
+    k = high
 
-    while mid_ptr <= high_ptr:
-        if arr[mid_ptr][0] < pivot:
-            arr[low_ptr], arr[mid_ptr] = arr[mid_ptr], arr[low_ptr]
-            low_ptr += 1
-            mid_ptr += 1
-        elif arr[mid_ptr][0] > pivot:
-            arr[mid_ptr], arr[high_ptr] = arr[high_ptr], arr[mid_ptr]
-            high_ptr -= 1
+    while j <= k:
+        if arr[j][0] < pivot:
+            arr[i], arr[j] = arr[j], arr[i]
+            i+=1
+            j+=1
+        elif arr[j][0] > pivot:
+            arr[j], arr[k] = arr[k], arr[j]
+            k -= 1
         else:
-            mid_ptr += 1
+            j += 1
 
-    return low_ptr, high_ptr
+    return i,j
 
-def quickSort(arr, low, high):
-    stack = [(low, high)]
+def quickSort(dict, low, high):
+    if low < high:
+        i, j = partition(dict, low, high)
+        partition(dict,low, i-1)
+        partition(dict,j,high)
 
-    while stack:
-        low, high = stack.pop()
-
-        if low < high:
-            low_ptr, high_ptr = partition(arr, low, high)
-            stack.append((low, low_ptr - 1))
-            stack.append((high_ptr + 1, high))
 
 def quicksortandnarrowbyTime(dataframe, min_time, max_time):
     container = []
@@ -42,9 +39,9 @@ def quicksortandnarrowbyTime(dataframe, min_time, max_time):
     for value in dataframe['minutes']:
         container.append([value, index])
         index += 1
-    
+
     quickSort(container, 0, len(container) - 1)
-    
+
     narrowedtimesortedlist = []
     for i in range(len(container)):
         if (container[i][0] >= min_time):
@@ -53,21 +50,22 @@ def quicksortandnarrowbyTime(dataframe, min_time, max_time):
             break
     return narrowedtimesortedlist
 
+
 def XtoCalandnarrow(dataframe, Xlist, min, max):
     callist = []
     for i in range(len(Xlist)):
         nutrition = dataframe.loc[Xlist[i][1], 'nutrition']
         float_calories = float(nutrition)
-        
+
         callist.append([float_calories, Xlist[i][1]])
-    
+
     narrowedcallist = []
     for i in range(len(callist)):
         if (callist[i][0] <= max and callist[i][0] >= min):
             narrowedcallist.append([callist[i][0], callist[i][1]])
 
-
     return narrowedcallist
+
 
 def quicksortandnarrowbyCal(dataframe, min, max):
     container = []
@@ -86,6 +84,7 @@ def quicksortandnarrowbyCal(dataframe, min, max):
             break
     return narrowedcalsortedlist
 
+
 def quicksortandnarrowbyDiff(dataframe, difficulty):
     container = []
     index = 0
@@ -93,13 +92,13 @@ def quicksortandnarrowbyDiff(dataframe, difficulty):
         container.append([value, index])
         index += 1
     quickSort(container, 0, len(container) - 1)
-    
+
     narroweddiffsortedlist = []
     range1 = []
-    
+
     if difficulty == "easy":
         range1 = [0, 5]
-    elif difficulty== "medium":
+    elif difficulty == "medium":
         range1 = [6, 9]
     else:
         range1 = [10, 99999]
@@ -111,27 +110,28 @@ def quicksortandnarrowbyDiff(dataframe, difficulty):
             break
     return narroweddiffsortedlist
 
+
 def XtoDiffandnarrow(dataframe, Xlist, difficulty):
     difflist = []
     for i in range(len(Xlist)):
         steps = dataframe.loc[Xlist[i][1], 'n_steps']
-        
+
         difflist.append([steps, Xlist[i][1]])
-    
-    
+
     narroweddiffsortedlist = []
 
     if difficulty == "easy":
         range1 = [0, 5]
-    elif difficulty== "medium":
+    elif difficulty == "medium":
         range1 = [6, 9]
     else:
         range1 = [10, 99999]
     for i in range(len(difflist)):
         if (difflist[i][0] >= range1[0] and difflist[i][0] <= range1[1]):
             narroweddiffsortedlist.append(difflist[i])
-    
+
     return narroweddiffsortedlist
+
 
 def checkIngredients(dataframe, Xlist, ing1, ing2, ing3):
     result_list = []
@@ -144,18 +144,18 @@ def checkIngredients(dataframe, Xlist, ing1, ing2, ing3):
         elif ing1 in ingredients and ing2 in ingredients and ing3 == "-1":
             result_list.append(Xlist[i][1])
         elif ing1 in ingredients and ing2 in ingredients and ing3 in ingredients:
-            result_list.append(Xlist[i][1])      
-    
+            result_list.append(Xlist[i][1])
+
     return result_list
+
 
 def ingredientsonlyList(dataframe):
     container = []
     index = 0
     for value in dataframe['n_steps']:
         container.append([value, index])
-        index += 1    
+        index += 1
     return container
-
 
 
 def controlQuickSort(dataframe, min_time, max_time, min_cals, max_cals, difficulty, ing1, ing2, ing3):
@@ -173,18 +173,18 @@ def controlQuickSort(dataframe, min_time, max_time, min_cals, max_cals, difficul
             n_resultlist = quicksortandnarrowbyCal(dataframe, min_cals, max_cals)
             if difficulty != "-1":
                 n_resultlist = XtoDiffandnarrow(dataframe, n_resultlist, difficulty)
-                
+
         else:
             if difficulty != "-1":
                 n_resultlist = quicksortandnarrowbyDiff(dataframe, difficulty)
             else:
                 n_resultlist = ingredientsonlyList(dataframe)
-                
+
     if ing1 != "-1":
         final_resultlist = checkIngredients(dataframe, n_resultlist, ing1, ing2, ing3)
     else:
         final_resultlist = [inner_list[1] for inner_list in n_resultlist]
-    
+
     final_dict = {}
 
     for i in range(len(final_resultlist)):
