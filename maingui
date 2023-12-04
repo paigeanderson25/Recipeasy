@@ -55,6 +55,12 @@ def ErrorPopup():
     event, values = errorWindow.read()
     errorWindow.close()
 
+def NoRecipesFound():
+    layout = [[sg.Text('ERROR: no recipes found with ingredient(s)')]]
+    errorWindow = sg.Window('Error', layout)
+    event, values = errorWindow.read()
+    errorWindow.close()
+
 def CreateFinalDf(final_dict, df, nameList):
     # Extracting the second list value from each dictionary key
     someValues = [i[1] for i in final_dict.values()]
@@ -321,6 +327,8 @@ while True:
             i_maxCals = int(maxCals)
 
             if sortMeth == "merge":
+                for i in range(160):
+                    sg.PopupAnimated(sg.DEFAULT_BASE64_LOADING_GIF, time_between_frames=40)
                 final_dictionary = ms.controlMergeSort(df, i_minTime, i_maxTime, i_minCals, i_maxCals, selectedDif,
                                                        ing1, ing2, ing3)
                 # print(final_dictionary[0])
@@ -328,10 +336,22 @@ while True:
                 # show pop up table of recipes --> create function for displaying these
                 nameList = []
                 dfnew = CreateFinalDf(final_dictionary, df, nameList)
-                CreateTable(dfnew, nameList)
-            # if sortMeth == "quick":
-            #     final_dictionary = qs.controlQuickSort(df, i_minTime, i_maxTime, i_minCals, i_maxCals, selectedDif,
+                Csg.PopupAnimated(None)
+                if final_dictionary == {}:
+                    sg.theme('DarkRed1')
+                    NoRecipesFound()
+                else:
+                    CreateTable(df, final_dictionary)
+            if sortMeth == "quick":
+                for i in range(160):
+                      sg.PopupAnimated(sg.DEFAULT_BASE64_LOADING_GIF, time_between_frames=40)
+            #   final_dictionary = qs.controlQuickSort(df, i_minTime, i_maxTime, i_minCals, i_maxCals, selectedDif,
             #                                            ing1, ing2, ing3)
-            #     CreateTable(df, final_dictionary)
+                sg.PopupAnimated(None)
+                if final_dictionary == {}:
+                    sg.theme('DarkRed1')
+                    NoRecipesFound()
+                else:
+                    CreateTable(df, final_dictionary))
 
 window.close()
