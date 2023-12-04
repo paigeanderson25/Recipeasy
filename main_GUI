@@ -295,11 +295,13 @@ while True :
                                                                                                                                                                                                                                                                                                 
                 # show pop up table of recipes --> create function for displaying these                                                                                                                                                                                                                                      
                 CreateTable(df, final_dictionary)
+                sg.PopupAnimated(None)
             if sortMeth == "quick":
                 for i in range(160):
                     sg.PopupAnimated(sg.DEFAULT_BASE64_LOADING_GIF, time_between_frames=40)
                 final_dictionary = qs.controlQuickSort(df, i_minTime, i_maxTime, i_minCals, i_maxCals, selectedDif, ing1, ing2, ing3)
-                CreateTable(df, final_dictionary)                                                                                                                                                                                                                                                                            
+                CreateTable(df, final_dictionary)
+                sg.PopupAnimated(None)
                                                                                                                                                                                                                                                                                                                              
                                                                                                                                                                                                                                                                                                                              
                                                                                                                                                                                                                                                                                                                              
