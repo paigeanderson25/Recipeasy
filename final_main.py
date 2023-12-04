@@ -115,7 +115,7 @@ def ErrorPopup():
 
 
 def CreateTable(df, final_dict, final_time):
-
+    page = 0
     # Extracting the second list value from each dictionary key
     someValues = [i[1] for i in final_dict.values()]
     #print(someValues[0])
@@ -123,7 +123,7 @@ def CreateTable(df, final_dict, final_time):
     # Filtering the original DataFrame based on the 'id' column
 
     bigDf = df[df['id'].isin(someValues)]
-    print(len(bigDf.index))
+    
     if len(bigDf.index) > 5:
         bigDf = bigDf.sample(frac=1)
     
@@ -163,7 +163,7 @@ def CreateTable(df, final_dict, final_time):
             break
         elif event == 'Learn More':
             tableIndex = values['table'][0]
-            print(tableIndex)
+            tableIndex += page * 5
             if tableIndex != -1:
                 row = bigDf.iloc[tableIndex]
                 getimages(row['name'])
@@ -178,6 +178,7 @@ def CreateTable(df, final_dict, final_time):
                 start += 5
                 end = min(end + 5, maxSize)
                 window2['table'].update(values=nameList[start:end])
+                page += 1
 
 
         elif event == 'Previous Page':
@@ -186,9 +187,11 @@ def CreateTable(df, final_dict, final_time):
                 start -= 5
                 end = min(end, end-5)
                 window2['table'].update(values=nameList[start:end])
+                page -= 1
 
     start = start
     end = end
+    page = page
 
     window2.close()
 
