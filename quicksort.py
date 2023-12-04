@@ -16,22 +16,21 @@ def partition(arr, low, high):
     while j <= k:
         if arr[j][0] < pivot:
             arr[i], arr[j] = arr[j], arr[i]
-            i+=1
-            j+=1
+            i += 1
+            j += 1
         elif arr[j][0] > pivot:
             arr[j], arr[k] = arr[k], arr[j]
             k -= 1
         else:
             j += 1
 
-    return i,j
+    return i, j
 
-def quickSort(dict, low, high):
+def quickSort(arr, low, high):
     if low < high:
-        i, j = partition(dict, low, high)
-        partition(dict,low, i-1)
-        partition(dict,j,high)
-
+        i, j = partition(arr, low, high)
+        quickSort(arr, low, i - 1)
+        quickSort(arr, j, high)
 
 def quicksortandnarrowbyTime(dataframe, min_time, max_time):
     container = []
@@ -44,11 +43,13 @@ def quicksortandnarrowbyTime(dataframe, min_time, max_time):
 
     narrowedtimesortedlist = []
     for i in range(len(container)):
-        if (container[i][0] >= min_time):
+        if container[i][0] >= min_time:
             narrowedtimesortedlist.append(container[i])
-        if (container[i][0] > max_time):
+        if container[i][0] > max_time:
             break
+
     return narrowedtimesortedlist
+
 
 
 def XtoCalandnarrow(dataframe, Xlist, min, max):
@@ -72,9 +73,11 @@ def quicksortandnarrowbyCal(dataframe, min, max):
     index = 0
     for value in dataframe['nutrition']:
         float_calories = float(value)
+        
         container.append([float_calories, index])
         index += 1
     quickSort(container, 0, len(container) - 1)
+    
     narrowedcalsortedlist = []
     for i in range(len(container)):
 
@@ -82,6 +85,7 @@ def quicksortandnarrowbyCal(dataframe, min, max):
             narrowedcalsortedlist.append(container[i])
         if (container[i][0] > max):
             break
+    
     return narrowedcalsortedlist
 
 
