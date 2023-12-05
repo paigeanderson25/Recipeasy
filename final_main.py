@@ -18,6 +18,7 @@ import time
 import random
 from selenium.webdriver.support import expected_conditions as EC
 
+#setting user agents to avoid bot detection
 useragents = [
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36",
@@ -30,7 +31,7 @@ options.add_argument(f"--user-agent={useragent}")
 driver = webdriver.Chrome(options=options)
 wait = WebDriverWait(driver, 20)
 
-
+#function to get images corresponding to selected recipe names using google image web scraping
 def getimages(name):
     driver.get('https://images.google.com/');
 
@@ -46,7 +47,7 @@ def getimages(name):
 
     data = src[22:]
 
-    bytes_decoded = base64.b64decode(data)
+    bytes_decoded = base64.b64decode(data) #decodes image data in base64
 
     img = PIL.Image.open(BytesIO(bytes_decoded))
 
