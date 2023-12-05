@@ -6,7 +6,7 @@ start_time = time.time()
 '''df = pd.read_csv("RAW_recipes.csv")
 df['index'] = df.index'''
 
-
+#implements Dijkstra's 3 way partition method, elements are either less than, equal to, or greater than the pivot
 def partition(arr, low, high):
     pivot = arr[random.randint(low, high)][0]
     i = low
@@ -26,12 +26,14 @@ def partition(arr, low, high):
 
     return i, j
 
-def quickSort(arr, low, high):
+#main quicksort method
+def quickSort(arr, low, high): 
     if low < high:
         i, j = partition(arr, low, high)
         quickSort(arr, low, i - 1)
         quickSort(arr, j, high)
-
+        
+#constructs a list from the data elements and calls quicksort to sort by time
 def quicksortandnarrowbyTime(dataframe, min_time, max_time):
     container = []
     index = 0
@@ -40,7 +42,8 @@ def quicksortandnarrowbyTime(dataframe, min_time, max_time):
         index += 1
 
     quickSort(container, 0, len(container) - 1)
-
+    
+#iterates through the returned sorted list to find all elements that fit minute range criteria
     narrowedtimesortedlist = []
     for i in range(len(container)):
         if container[i][0] >= min_time:
@@ -49,7 +52,6 @@ def quicksortandnarrowbyTime(dataframe, min_time, max_time):
             break
 
     return narrowedtimesortedlist
-
 
 
 def XtoCalandnarrow(dataframe, Xlist, min, max):
@@ -67,7 +69,7 @@ def XtoCalandnarrow(dataframe, Xlist, min, max):
 
     return narrowedcallist
 
-
+#repeats quicksort and filter method for calories
 def quicksortandnarrowbyCal(dataframe, min, max):
     container = []
     index = 0
@@ -88,7 +90,7 @@ def quicksortandnarrowbyCal(dataframe, min, max):
     
     return narrowedcalsortedlist
 
-
+#repeats quicksort and filter method for number of steps
 def quicksortandnarrowbyDiff(dataframe, difficulty):
     container = []
     index = 0
@@ -100,6 +102,7 @@ def quicksortandnarrowbyDiff(dataframe, difficulty):
     narroweddiffsortedlist = []
     range1 = []
 
+    #sets range of step numbers to look for, depending on difficulty level chosen
     if difficulty == "easy":
         range1 = [0, 5]
     elif difficulty == "medium":
@@ -136,7 +139,7 @@ def XtoDiffandnarrow(dataframe, Xlist, difficulty):
 
     return narroweddiffsortedlist
 
-
+#checks if elements from filtered list can be found matching specified ingredient search terms
 def checkIngredients(dataframe, Xlist, ing1, ing2, ing3):
     result_list = []
     for i in range(len(Xlist)):
@@ -161,7 +164,7 @@ def ingredientsonlyList(dataframe):
         index += 1
     return container
 
-
+#main method that controls how user-specified parameters are used to call necessary functions
 def controlQuickSort(dataframe, min_time, max_time, min_cals, max_cals, difficulty, ing1, ing2, ing3):
     if max_time != -1:
         n_resultlist = quicksortandnarrowbyTime(dataframe, min_time, max_time)
