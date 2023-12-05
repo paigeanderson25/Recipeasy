@@ -53,7 +53,7 @@ def quicksortandnarrowbyTime(dataframe, min_time, max_time):
 
     return narrowedtimesortedlist
 
-
+#takes a given list with format [[minutes, index]] and filters by calories
 def XtoCalandnarrow(dataframe, Xlist, min, max):
     callist = []
     for i in range(len(Xlist)):
@@ -117,7 +117,7 @@ def quicksortandnarrowbyDiff(dataframe, difficulty):
             break
     return narroweddiffsortedlist
 
-
+#takes a given list with format [[minutes, index]] and filters by number of steps
 def XtoDiffandnarrow(dataframe, Xlist, difficulty):
     difflist = []
     for i in range(len(Xlist)):
