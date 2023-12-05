@@ -53,7 +53,7 @@ def getimages(name):
     out_jpg = img.convert("RGB")
     out_jpg.save("img.png")
 
-
+# load in recipe dataset as dataframe
 df = pd.read_csv("RAW_recipes.csv")
 df['index'] = df.index
 # filter df by including ingredients, time, nutrition (calories only), difficulty
@@ -61,50 +61,41 @@ df = df[['index', 'id', 'name', 'minutes', 'nutrition', 'n_steps', 'ingredients'
 calOnly = df['nutrition'].str.split(',').str[0].str.replace('[', '').str.strip()
 df['nutrition'] = calOnly
 
-
+# check if min and max values are only digits
 def CatchCharForInt(minVal, maxVal):
     if (minVal.isdigit() == False and minVal != '-1'):
-        print("Error: please enter integer values only")
         return False
     elif (maxVal.isdigit() == False and maxVal != '-1'):
-        print("Error: please enter integer values only")
         return False
     else:
         return True
 
-
+# check if min values entered is greater than max value
 def CatchInvalidInputInts(minVal, maxVal):
     if (minVal > maxVal):
-        print("Error: minimum is greater than maximum")
         return False
     else:
         return True
 
-
+# catch if ingredients contain characters other than letters or spaces
 def CatchInvalidInputIngredients(ing1, ing2, ing3):
     if (ing1 != '-1' and not all(char.isalpha() or char.isspace() for char in ing1)):
-        print("Error: please enter character values only")
-        print(ing1)
         return False
     elif (ing2 != '-1' and not all(char.isalpha() or char.isspace() for char in ing2)):
-        print("Error: please enter character values only")
-        print(ing2)
         return False
     elif (ing3 != '-1' and not all(char.isalpha() or char.isspace() for char in ing3)):
-        print("Error: please enter character values only")
-        print(ing3)
         return False
 
     return True
 
-
+# create error window if no recipes are found with matching input
 def NoRecipesFound():
     layout = [[sg.Text('ERROR: no recipes found with ingredient(s)')]]
     errorWindow = sg.Window('Error', layout)
     event, values = errorWindow.read()
     errorWindow.close()
 
-
+# create error window if an error is found
 def ErrorPopup():
     layout = [[sg.Text('ERROR: INVALID INPUT')],
               [sg.Text('Please re-enter valid input values')]]
@@ -112,26 +103,22 @@ def ErrorPopup():
     event, values = errorWindow.read()
     errorWindow.close()
 
-
+# creates recipe table using dataframe, final dictionary and final time
 def CreateTable(df, final_dict, final_time):
     page = 0
     # Extracting the second list value from each dictionary key
     someValues = [i[1] for i in final_dict.values()]
-    # print(someValues[0])
 
     # Filtering the original DataFrame based on the 'id' column
-
     bigDf = df[df['id'].isin(someValues)]
 
     if len(bigDf.index) > 5:
         bigDf = bigDf.sample(frac=1)
 
-    # bigDf = bigDf.sample(frac=1)
-    # print(nameDf)
-
     # Extracting the 'name' column from the filtered DataFrame
     nameDf = bigDf[['name']]
 
+    # fix punctuation of names 
     nameList = []
     for value in nameDf['name']:
         properName = ms.fixPunctuation(value)
@@ -141,6 +128,7 @@ def CreateTable(df, final_dict, final_time):
     maxSize = len(nameList)
     end = min(5, maxSize)
 
+    # set table window layout (table of recipes, buttons) 
     tableLayout = [
         [sg.Text(
             "Select a recipe and press to learn more:          Sort time: " + str(round(final_time, 4)) + ' seconds')],
@@ -157,11 +145,14 @@ def CreateTable(df, final_dict, final_time):
     ]
     window2 = sg.Window('Recipes', tableLayout, size=(800, 600))
 
+    
     while True:
         event, values = window2.read()
 
         if event == sg.WINDOW_CLOSED or event == 'Close':
             break
+
+        # if learn more is selected show recipe info
         elif event == 'Learn More':
             tableIndex = values['table'][0]
             tableIndex += page * 5
@@ -173,6 +164,7 @@ def CreateTable(df, final_dict, final_time):
                 formatData = f"Name: {ms.fixPunctuation(row['name'])}\nTime: {row['minutes']}\nCalories: {row['nutrition']}\nNumber of Steps: {row['n_steps']}\nIngredients: {ms.fixIngredientlist(ingredients)}\nSteps: {ms.fixSteps(steps)}"
                 sg.popup_scrolled('Recipe Details', f"{formatData}", image="img.png")
 
+        # if next page is selected show next 5 recipes
         elif event == 'Next Page':
 
             if start + 5 <= maxSize:
@@ -181,7 +173,7 @@ def CreateTable(df, final_dict, final_time):
                 window2['table'].update(values=nameList[start:end])
                 page += 1
 
-
+        # if previouse page is selected show previous 5 recipes
         elif event == 'Previous Page':
 
             if start - 5 >= 0:
@@ -199,6 +191,8 @@ def CreateTable(df, final_dict, final_time):
 
 startingValue = ''
 sg.theme('LightBrown3')
+
+# set theme of overall window (checkbozes, input boxes, radio buttons, sort button)
 layout = [[sg.Column(layout=[[sg.Text('WELCOME TO RECIPEASY', justification='center', font=('Any', 16))]],
                      element_justification='center', expand_x=True)],
           [sg.Text('Please select how you would like to filter your recipes:', justification='center',
@@ -236,6 +230,7 @@ layout = [[sg.Column(layout=[[sg.Text('WELCOME TO RECIPEASY', justification='cen
 
 window = sg.Window('Recipeasy', layout, size=(800, 600))
 
+
 while True:
     sg.theme('LightBrown3')
     minTime = '-1'
@@ -250,6 +245,7 @@ while True:
     if event == sg.WINDOW_CLOSED:
         break
 
+    # if time is selected make min/max time input boxes visible
     elif event == 'time':
         if values['time']:
             window['min1'].update(visible=True)
@@ -262,6 +258,7 @@ while True:
             window['max1'].update(visible=False)
             window['maxTime'].update(visible=False)
 
+    # if nutrition is selected make min/max calories boxes visible
     elif event == 'nutrition':
         if values['nutrition']:
             window['min2'].update(visible=True)
@@ -274,6 +271,7 @@ while True:
             window['max2'].update(visible=False)
             window['maxCals'].update(visible=False)
 
+    # if difficulty is selected make easy, medium, hard radio buttons visible
     elif event == 'difficulty':
         if values['difficulty']:
             window['easy'].update(visible=True)
@@ -284,7 +282,7 @@ while True:
             window['medium'].update(visible=False)
             window['hard'].update(visible=False)
 
-
+    # if ingredients is selected make three ingredient input boxes visible
     elif event == 'ingredients':
         if values['ingredients']:
             window['val1'].update(visible=True)
@@ -301,15 +299,16 @@ while True:
             window['val3'].update(visible=False)
             window['ing3'].update(visible=False)
 
+    # if sort is selected set values accordingly and call sort functions
     elif event == 'Sort':
 
+        # if merge/quick selected then assign appropriate value to sorting method
         if values['merge']:
             sortMeth = 'merge'
         else:
             sortMeth = 'quick'
 
-            # create function passing in sort method that calls sorting function with parameters
-
+        # assign values to time variables, -1 if no input
         if (values['time']):
             minTime = values['minTime']
             maxTime = values['maxTime']
@@ -319,6 +318,7 @@ while True:
             if maxTime == "":
                 maxTime = '-1'
 
+        # assign values to nutrition variables, -1 if no input
         if (values['nutrition']):
             minCals = values['minCals']
             maxCals = values['maxCals']
@@ -329,6 +329,7 @@ while True:
             if maxCals == "":
                 maxCals = '-1'
 
+        # assign values to difficulty variables
         if (values['difficulty']):
             if values['easy']:
                 selectedDif = 'easy'
@@ -337,6 +338,7 @@ while True:
             elif values['hard']:
                 selectedDif = 'hard'
 
+        # assign values to ingredients, -1 if no input
         if (values['ingredients']):
             ing1 = values['ing1']
             ing2 = values['ing2']
@@ -351,16 +353,18 @@ while True:
             if ing3 == "":
                 ing3 = '-1'
 
+        # assign min/max time values if only one input box is entered in
         if (minTime == "-1" and maxTime != "-1"):
             minTime = '0'
         elif (minTime != "-1" and maxTime == '-1'):
-            maxTime = '10000'
+            maxTime = '100000'
 
         if (minCals == '-1' and maxCals != '-1'):
             minCals = '0'
         elif (minCals != '-1' and maxCals == '-1'):
-            maxCals = '10000'
-            # check if integers are not characters
+            maxCals = '100000'
+            
+        # check if integers are not characters
         c1 = CatchCharForInt(minTime, maxTime)
         c2 = CatchCharForInt(minCals, maxCals)
 
@@ -375,9 +379,12 @@ while True:
             c4 = False
             c5 = False
 
+        # if any error occurs, show error popup
         if (c1 == False or c2 == False or c3 == False or c4 == False or c5 == False):
             sg.theme('DarkRed1')
             ErrorPopup()
+
+        # perform sort functions if no errors
         else:
             final_time = 0
             i_minTime = int(minTime)
@@ -385,6 +392,7 @@ while True:
             i_minCals = int(minCals)
             i_maxCals = int(maxCals)
 
+            # show loading gif, show perform merge sort, if recipes found create table and if not show error message
             if sortMeth == "merge":
                 for i in range(160):
                     sg.PopupAnimated(sg.DEFAULT_BASE64_LOADING_GIF, time_between_frames=40)
@@ -401,10 +409,7 @@ while True:
                 else:
                     CreateTable(df, final_dictionary, final_time)
 
-                # print(final_dictionary[0])
-
-                # show pop up table of recipes --> create function for displaying these
-                # CreateTable(df, final_dictionary, final_time)
+            # show loading gif, show perform quick sort, if recipes found create table and if not show error message
             if sortMeth == "quick":
                 for i in range(160):
                     sg.PopupAnimated(sg.DEFAULT_BASE64_LOADING_GIF, time_between_frames=40)
